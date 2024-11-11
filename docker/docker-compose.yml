@@ -3,7 +3,7 @@ services:
     container_name: backend
     image: backend-lab1:2024
     build:
-      context: ./TP-1/backend@tmp/
+      context: ../../2024-2025/TP-1/backend@tmp/
       dockerfile: Dockerfile
     environment:
       - POSTGRES_PASSWORD=postgres
@@ -16,7 +16,7 @@ services:
     container_name: frontend
     image: frontend-lab1:2024
     build:
-      context: ./TP-1/frontend@tmp/
+      context: ../../2024-2025/TP-1/frontend
       dockerfile: Dockerfile
     environment:
       - POSTGRES_PASSWORD=postgres

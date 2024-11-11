@@ -1,0 +1,48 @@
+pipeline {
+    agent {
+        label 'agent'
+    }
+
+    stages {
+        stage('Cloning Git Lab') {
+            steps {
+                dir('2024-2025') {
+                    git branch: 'main', credentialsId: 'd1deecb1-8113-4e95-bce7-e8360dd3116e', url: 'https://github.com/ST2DCE/2024-2025.git'
+                }
+            }
+        }
+
+	    stage('Cloning our Git') {
+            steps {
+                dir('DevopsLab1') {
+                    git branch: 'main', url: 'https://github.com/Demonis0/DevopsLab1.git'
+                }
+            }
+        }
+
+        stage('Deploy with Docker Compose') {
+            steps {
+                script {
+                    // Build and start containers using docker-compose
+                    sh '''
+                    docker-compose -f DevopsLab1/docker/docker-compose.yml down || true
+                    docker-compose -f DevopsLab1/docker/docker-compose.yml up -d --build
+                    '''
+                }
+            }
+        }
+        
+        stage('Modify Database in Backend Container') {
+            steps {
+                script {
+                    // Run database modifications inside the backend container
+                    sh '''
+                    sleep 10
+                    docker exec backend psql -h localhost -p 5432 -U postgres -d postgres -c "DELETE FROM book;"
+                    docker exec backend psql -h localhost -p 5432 -U postgres -d postgres -c "INSERT INTO book (title) VALUES ('Nathan DELORME'), ('Mattis DESVILLES'), ('Frédéric CASIER'), ('Matthieu JACQUES'), ('Julien DE LAHARPE');"
+                    '''
+            	}
+            }
+        }
+    }
+}

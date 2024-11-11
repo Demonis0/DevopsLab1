@@ -1,0 +1,32 @@
+services:
+  backend:
+    container_name: backend
+    image: backend-lab1:2024
+    build:
+      context: ../../2024-2025/TP-1/backend
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - efrei
+    ports:
+      - "5432:5432"
+
+  frontend:
+    container_name: frontend
+    image: frontend-lab1:2024
+    build:
+      context: ../../2024-2025/TP-1/frontend
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - efrei
+    depends_on:
+      - backend
+    ports:
+      - "8081:80"
+
+networks:
+  efrei:
+    driver: bridge
